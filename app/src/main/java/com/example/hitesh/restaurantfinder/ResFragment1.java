@@ -10,13 +10,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -35,7 +41,10 @@ public class ResFragment1 extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    ListView listView;
     Activity context;
+    private List<Details> detailsList;
+    private DetailsAdapter detailsAdapter;
     public class GetDetails extends AsyncTask<String,Void,String>{
 
         @Override
@@ -59,6 +68,27 @@ public class ResFragment1 extends Fragment {
                 e.printStackTrace();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject detail = new JSONObject(s);
+                String name = detail.getString("name");
+                JSONObject location = new JSONObject(detail.getString("location"));
+                String address = location.getString("address");
+                detailsList.add(new Details("name", name));
+                detailsList.add(new Details("address", address));
+                String cuisines = detail.getString("cuisines");
+                JSONObject user_rating = new JSONObject(detail.getString("user_rating"));
+                String rating = user_rating.getString("aggregate_rating");
+                detailsList.add(new Details("cuisines", cuisines));
+                detailsList.add(new Details("user-rating", rating));
+                detailsAdapter.notifyDataSetChanged();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
     private OnFragmentInteractionListener mListener;
@@ -93,16 +123,22 @@ public class ResFragment1 extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        GetDetails task=new GetDetails();
-        task.execute("https://developers.zomato.com/api/v2.1/restaurant?res_id="+getArguments().getString("resId"));
+
 
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        TextView tv=(TextView)context.findViewById(R.id.fragment1);
-        tv.setText(getArguments().getString("resId"));
+//        TextView tv=(TextView)context.findViewById(R.id.fragment1);
+//        tv.setText(getArguments().getString("resId"));
+        listView = (ListView) context.findViewById(R.id.details);
+        detailsList = new ArrayList<>();
+        //detailsList.add(new Details("hmm","ouu"));
+        detailsAdapter = new DetailsAdapter(getContext(), detailsList);
+        listView.setAdapter(detailsAdapter);
+        GetDetails task = new GetDetails();
+        task.execute("https://developers.zomato.com/api/v2.1/restaurant?res_id=" + getArguments().getString("resId"));
     }
 
     @Override
@@ -111,6 +147,7 @@ public class ResFragment1 extends Fragment {
         // Inflate the layout for this fragment
         context=getActivity();
         return inflater.inflate(R.layout.fragment_res_fragment1, container, false);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event

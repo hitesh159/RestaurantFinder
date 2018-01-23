@@ -3,17 +3,24 @@
     android:id="@+id/fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.hitesh.restaurantfinder.ResFragment1">
+    tools:context="com.example.hitesh.restaurantfinder.ResFragment1"
+    android:background="#d1d1d1">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/fragment1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <!--<TextView-->
+    <!--android:id="@+id/fragment1"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:text="@string/hello_blank_fragment" />-->
 
     <ListView
+        android:id="@+id/details"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:dividerHeight="10dp"
+        android:divider="#d1d1d1" />
 
 </FrameLayout>
