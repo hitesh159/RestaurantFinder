@@ -39,6 +39,8 @@ public class ListActivity extends AppCompatActivity {
     private ListAdapter adapter;
     private List<ListModel> list;
     ArrayList<String> resId;
+    ArrayList<String> lat;
+    ArrayList<String> lon;
     LocationManager locationManager;
     LocationListener locationListener;
     public void updateLocationInfo(Location location){
@@ -116,6 +118,8 @@ public class ListActivity extends AppCompatActivity {
                     JSONObject location=new JSONObject(restaurant.getString("location"));
                     list.add(new ListModel(location.getString("address"),location.getString("locality"),restaurant.getString("name"),i));
                     resId.add(restaurant.getString("id"));
+                    lat.add(location.getString("latitude"));
+                    lon.add(location.getString("longitude"));
                     Log.i("name of restaurant",restaurant.getString("name"));
                 }
                 adapter.notifyDataSetChanged();
@@ -134,6 +138,8 @@ public class ListActivity extends AppCompatActivity {
         resId=new ArrayList<>();
         listView=(ListView)findViewById(R.id.list);
         list=new ArrayList<>();
+        lat = new ArrayList<>();
+        lon = new ArrayList<>();
         adapter=new ListAdapter(getApplicationContext(),list);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -142,6 +148,8 @@ public class ListActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), Integer.toString(i),Toast.LENGTH_SHORT).show();
                 Intent intent=new Intent(getApplicationContext(),RestaurantDetails.class);
                 intent.putExtra("resId",resId.get(i));
+                intent.putExtra("latitude", lat.get(i));
+                intent.putExtra("longitude", lon.get(i));
                 startActivity(intent);
             }
         });

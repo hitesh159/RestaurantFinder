@@ -14,6 +14,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -26,29 +28,43 @@ public class RestaurantDetails extends AppCompatActivity implements ResFragment1
     private TabLayout tabLayout;
     private ViewPager viewPager;
     public static String resId;
+    public static Double lat;
+    public static Double lon;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_details);
         Intent intent=getIntent();
          resId=intent.getStringExtra("resId");
+
         Toast.makeText(getApplicationContext(),intent.getStringExtra("resId"),Toast.LENGTH_SHORT).show();
         toolbar=(Toolbar)findViewById(R.id.toolbar2);
-
+        lat = Double.parseDouble(intent.getStringExtra("latitude"));
+        lon = Double.parseDouble(intent.getStringExtra("longitude"));
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         viewPager=(ViewPager)findViewById(R.id.viewpager);
         setupViewPager(viewPager);
         tabLayout=(TabLayout)findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        //showFragment(resId);
     }
-//    public void showFragment(String s){
-//        FragmentTransaction trans=getSupportFragmentManager().beginTransaction();
-//        ResFragment1 fragment1=ResFragment1.newInstance(s);
-//        trans.add(R.id.fragment_container,fragment1,"fragment1");
-//        trans.commit();
-//    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.my_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.mybutton) {
+            Intent intent = new Intent(RestaurantDetails.this, MapsActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void  setupViewPager(ViewPager viewPager){
         ViewPagerAdapter adapter=new ViewPagerAdapter(getSupportFragmentManager());
         ResFragment1 resFragment1=ResFragment1.newInstance(resId);
